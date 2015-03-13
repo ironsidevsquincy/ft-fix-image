@@ -11,7 +11,7 @@ const fetchCapiV2 = function(url) {
 			if (response.ok) {
 				return response.json();
 			}
-			throw new Error("Bad response from CAPI v2 for uuid: ", uuid);
+			throw new Error("Bad response from CAPI v2 for uuid: ", url);
 		});
 }
 
