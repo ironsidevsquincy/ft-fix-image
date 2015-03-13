@@ -28,7 +28,6 @@ program
 				return fetchCapiV2(imageSet.members[0].id);
 			})
 			.then(function(image) {
-				console.log("http://methode-image-model-transformer-iw-uk-p.svc.ft.com/image/model/" + image.contentOrigin.originatingIdentifier);
 				return fetch("http://binary-ingester-iw-uk-p.svc.ft.com/ingest", {
 					method: 'POST',
 					timeout: 3000,
@@ -40,7 +39,6 @@ program
 			})
 			.then(function(response) {
 				if (!response.ok) {
-					console.log(response);
 					throw new Error("Unable to republish image");
 				}
 				console.log("Successfully republished images in " + uuid);
