@@ -33,7 +33,7 @@ program
 			}, function(err) {
 				console.log("This article doesn't seem to exist…");
 				throw err;
-			});
+			})
 			.then(function(imageSet) {
 				return fetchCapiV2(imageSet.members[0].id);
 			})
