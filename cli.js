@@ -11,7 +11,7 @@ const fetchCapiV2 = function(url) {
 			if (response.ok) {
 				return response.json();
 			}
-			throw new Error("Bad response from CAPI v2 for uuid: ", url);
+			throw new Error("Bad response from CAPI v2 for url: " + url);
 		});
 }
 
@@ -22,8 +22,18 @@ program
 	.action(function(uuid) {
 		fetchCapiV2('http://api.ft.com/content/' + uuid)
 			.then(function(article) {
-				return fetchCapiV2(article.mainImage.id);
-			})
+				if (!article.mainImage.id) {
+					throw new Error("Article does not have main image " + uuid);
+				}
+				return fetchCapiV2(article.mainImage.id)
+					.catch(function(err) {
+						console.log("The imageSet doesn't exist in the Content API so I probably can't fix this. Contact UPPPP");
+						throw err;
+					});
+			}, function(err) {
+				console.log("This article doesn't seem to exist…");
+				throw err;
+			});
 			.then(function(imageSet) {
 				return fetchCapiV2(imageSet.members[0].id);
 			})
