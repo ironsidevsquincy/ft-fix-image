@@ -5,7 +5,7 @@ const program = require('commander');
 const fetch = require('node-fetch');
 const apiKey = require('fs').readFileSync(process.env.HOME + '/.ftapi_v2', { encoding: 'utf8' });
 
-const fetchCapiV2 = function(url) {
+function fetchCapiV2(url) {
 	return fetch(url, { headers: { 'X-Api-Key': apiKey }, timeout: 3000 })
 		.then(function(response) {
 			if (response.ok) {
@@ -17,22 +17,21 @@ const fetchCapiV2 = function(url) {
 
 function republishImageSet(url) {
 	return fetchCapiV2(url)
-		.catch(function(err) {
+		.then(function(imageSet) {
+			return fetchCapiV2(imageSet.members[0].id)
+				.then(function(image) {
+					return fetch("http://binary-ingester-iw-uk-p.svc.ft.com/ingest", {
+						method: 'POST',
+						timeout: 3000,
+						body: '{ "contentUri" : "http://methode-image-model-transformer-iw-uk-p.svc.ft.com/image/model/' + image.contentOrigin.originatingIdentifier + '" }',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+				});
+		}, function(err)
 			console.log("The imageSet doesn't exist in the Content API so I probably can't fix this. Contact UPPPP");
 			throw err;
-		})
-		.then(function(imageSet) {
-			return fetchCapiV2(imageSet.members[0].id);
-		})
-		.then(function(image) {
-			return fetch("http://binary-ingester-iw-uk-p.svc.ft.com/ingest", {
-				method: 'POST',
-				timeout: 3000,
-				body: '{ "contentUri" : "http://methode-image-model-transformer-iw-uk-p.svc.ft.com/image/model/' + image.contentOrigin.originatingIdentifier + '" }',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
 		});
 }
 
