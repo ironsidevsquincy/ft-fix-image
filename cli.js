@@ -29,7 +29,7 @@ function republishImageSet(url) {
 						}
 					});
 				});
-		}, function(err)
+		}, function(err) {
 			console.log("The imageSet doesn't exist in the Content API so I probably can't fix this. Contact UPPPP");
 			throw err;
 		});
