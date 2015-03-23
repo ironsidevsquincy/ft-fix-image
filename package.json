@@ -9,6 +9,7 @@
     "commander": "^2.7.1",
     "es6-promise": "^2.0.1",
     "fetchres": "^1.0.4",
+    "flatten": "0.0.1",
     "node-fetch": "^1.0.4"
   }
 }
