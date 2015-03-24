@@ -34,8 +34,8 @@ function republishImageSet(url) {
 			throw err;
 		})
 		.then(function(imageSet) {
-            var imageUpdates = imageSet.members.map(function (image) {
-                var imageId = image.id.replace('http://api.ft.com/content/', '');
+            const imageUpdates = imageSet.members.map(function (image) {
+                const imageId = image.id.replace('http://api.ft.com/content/', '');
                 return [
                 	fetchImage('http://binary-ingester-iw-uk-p.svc.ft.com/ingest', 'image/model/' + imageId)
 	                    .then(function(response) {
@@ -54,7 +54,7 @@ function republishImageSet(url) {
 	                    })
                 ];
             });
-            var imageSetId = imageSet.id.replace('http://www.ft.com/thing/', '');
+            const imageSetId = imageSet.id.replace('http://www.ft.com/thing/', '');
             imageUpdates.push(
             	fetchImage('http://semantic-ingester-pr-uk-p.svc.ft.com/ingest', 'image-set/model/' + imageSetId)
 	                .then(function(response) {
@@ -75,7 +75,7 @@ program
 	.action(function(uuid) {
 		fetchCapiV2('http://api.ft.com/content/' + uuid)
 			.then(function(article) {
-				var imageIds = article.bodyXML.match(/ImageSet" url="http:\/\/api\.ft\.com\/content\/([a-z-0-9]{3,})"/g)
+				const imageIds = article.bodyXML.match(/ImageSet" url="http:\/\/api\.ft\.com\/content\/([a-z-0-9]{3,})"/g)
 					.map(function(snippet) {
 						return snippet.replace(/ImageSet" url="(http:\/\/api\.ft\.com\/content\/[a-z-0-9]{3,})"/, "$1");
 					});
