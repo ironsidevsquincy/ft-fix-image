@@ -27,8 +27,18 @@ const fetchImage = function (url, contentUri) {
     })
 }
 
-function republishImageSet(url) {
-	return fetchCapiV2(url)
+function republishImageSet(imageSetUrl) {
+    const imageSetId = imageSetUrl.replace('http://api.ft.com/content/', '');
+	fetchImage('http://semantic-ingester-pr-uk-p.svc.ft.com/ingest', 'image-set/model/' + imageSetId)
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("Unable to refeed image set '" + imageSetId + "'");
+            }
+            console.log("Successfully refed image set '" + imageSetId + "'");
+        })
+        .then(function () {
+        	return fetchCapiV2(imageSetUrl)
+        })
 		.catch(function(err) {
 			console.log("The imageSet doesn't exist in the Content API so I probably can't fix this. Contact UPPPP");
 			throw err;
@@ -54,16 +64,6 @@ function republishImageSet(url) {
 	                    })
                 ];
             });
-            const imageSetId = imageSet.id.replace('http://www.ft.com/thing/', '');
-            imageUpdates.push(
-            	fetchImage('http://semantic-ingester-pr-uk-p.svc.ft.com/ingest', 'image-set/model/' + imageSetId)
-	                .then(function(response) {
-	                    if (!response.ok) {
-	                        throw new Error("Unable to refeed image set '" + imageSetId + "'");
-	                    }
-	                    console.log("Successfully refed image set '" + imageSetId + "'");
-	                })
-            );
 			return Promise.all(flatten(imageUpdates));
 		});
 }
