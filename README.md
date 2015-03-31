@@ -15,6 +15,8 @@ npm install -g ft-fix-image
   Commands:
 
     article [uuid]  Fix the images within the specified uuid
+    image-set [uuid]  Fix the image set and associated images
+    image [uuid]  Fix the image
 
   Options:
 
